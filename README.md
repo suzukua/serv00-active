@@ -6,6 +6,9 @@ python脚本
 
 设置青龙环境变量名称Serv00 内容为(服务器ip,账号,密码)格式如右边用小写逗号隔开:s15.serv00.com,username,password
 
+![image](https://github.com/user-attachments/assets/3c676552-9c12-4036-af43-29731e158cb6)
+
+
 依赖管理添加paramiko,requests,urllib3
 
 ![image](https://github.com/user-attachments/assets/f3d70777-377f-4ae1-85e1-c9363efc5b25)
