@@ -1,62 +1,19 @@
-import requests
-import os
-import time
-import warnings
-from urllib3.exceptions import InsecureRequestWarning
-# 忽略 InsecureRequestWarning
-warnings.simplefilter("ignore", InsecureRequestWarning)
-# 登录面板
-def LoginPanel():
-    res = requests.get(host, verify=False)
-    csrftoken = res.cookies['csrftoken']
-    time.sleep(2)
-    headers = {
-        'Referer' : host,
-        'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    data = {
-        'username': username,
-        'password': password,
-        'csrfmiddlewaretoken': csrftoken,
-    }
-    res = requests.post(host, data=data,headers=headers,cookies=res.cookies,verify=False)
-    if res.text.find('/logout/') != -1:
-        print('面板登录成功')
-    else:
-        print('面板登录失败')
-        os._exit(0)
-# 登录ssh
-def LoginSsh():
-    import paramiko
-    # 创建ssh对象
-    with paramiko.SSHClient() as ssh:
-        # 自动添加SSH密钥
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        print('开始ssh连接')
-        try:
-            # 连接服务器
-            ssh.connect(hostname=hostname, username=username, password=password)
-            print('ssh连接成功')
-            print('开始执行查看ip命令')
-            
-            # 执行命令
-            stdin, stdout, stderr = ssh.exec_command("curl ifconfig.me")
-            print(stdout.read().decode())
-        except Exception as e:
-            print(f"SSH连接失败: {e}")
-            os._exit(0)
-if __name__ == '__main__':
-    # 从环境变量中获取服务器信息
-    Serv00 = os.environ.get('Serv00')
-    if Serv00 is None:
-        print('没有找到服务器信息,请重新设置变量Serv00')
-        os._exit(0)
-    info = Serv00.split(',')
-    hostname = info[0]
-    username = info[1]
-    password = info[2]
-    hostname_number = hostname.split('.')[0].replace('s', '')
-    host = f'https://panel{hostname_number}.serv00.com/login/'
-    LoginPanel()
-    LoginSsh()
+python脚本
+
+功能如下：
+1. 自动登录ssh后输出外网ip后退出
+2. 自动登录web面板
+
+设置青龙环境变量名称Serv00 内容为(服务器ip,账号,密码)格式如右边用小写逗号隔开:s15.serv00.com,username,password
+
+依赖管理添加paramiko,requests,urllib3
+
+![image](https://github.com/user-attachments/assets/f3d70777-377f-4ae1-85e1-c9363efc5b25)
+
+脚本管理添加文件serv00.py代码：https://raw.githubusercontent.com/gooaclok819/serv00-active/refs/heads/main/serv00.py
+
+![image](https://github.com/user-attachments/assets/dcc2393b-db5e-4fae-94ce-6286baef8335)
+
+定时任务创建任务名称自定义,文件写serv00.py 定时规则3  0 * * * 我这里写的是12点3分执行,可以自定义
+
+![image](https://github.com/user-attachments/assets/cfb47586-52c5-4ecb-bde8-0275b6449fae)
