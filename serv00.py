@@ -24,11 +24,11 @@ def LoginPanel():
         }
         res = requests.post(host, data=data,headers=headers,cookies=res.cookies,verify=False)
         if res.text.find('/logout/') != -1:
-            msg = '面板登录成功'
+            msg = '✅面板登录成功'
         else:
-            msg = '面板登录失败'
+            msg = '❌面板登录失败'
     except Exception as e:
-        msg += f"面板登录异常: {e}"
+        msg += f"❌面板登录异常: {e}"
     print(msg)
     return msg
         
@@ -44,7 +44,7 @@ def LoginSsh():
         try:
             # 连接服务器
             ssh.connect(hostname=hostname, username=username, password=password)
-            msg = 'ssh连接成功\n开始执行查看ip命令'
+            msg = '✅ssh连接成功\n开始执行查看ip命令'
             print('ssh连接成功')
             print('开始执行查看ip命令')
             
@@ -52,10 +52,10 @@ def LoginSsh():
             stdin, stdout, stderr = ssh.exec_command("curl ifconfig.me")
             ip = stdout.read().decode()
             print(ip)
-            msg += '\nIP:' + ip
+            msg += '\n✅IP:' + ip
         except Exception as e:
             print(f"SSH连接失败: {e}")
-            msg += f"SSH连接失败: {e}"
+            msg += f"❌SSH连接失败: {e}"
         return msg
         
 if __name__ == '__main__':
