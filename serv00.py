@@ -77,7 +77,7 @@ if __name__ == '__main__':
         passw = serv.password
         msg = f'开始执行服务器: {uname}@{hname}\n'
         try:
-            msg = LoginPanel(hname, uname, passw)
+            msg += '\n' + LoginPanel(hname, uname, passw)
             msg += '\n' + LoginSsh(hname, uname, passw)
             msgs.append(msg)
         except Exception as e:  # 捕获所有异常
