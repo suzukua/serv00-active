@@ -82,7 +82,8 @@ if __name__ == '__main__':
             msgs.append(msg)
         except Exception as e:  # 捕获所有异常
             print(f"执行服务器{uname}@{hname}时发生异常: {e}")
-            msgs.append(f"\n❌执行服务器时发生异常: {e}")
+            msg += f"\n❌执行服务器时发生异常: {e}"
+            msgs.append(msg)
 
     QLAPI.notify('Serv00保活通知', ('\n\n').join(msgs))
 
