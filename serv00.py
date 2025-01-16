@@ -3,10 +3,14 @@ import os
 import time
 import warnings
 from urllib3.exceptions import InsecureRequestWarning
+from urllib.parse import urlparse
+
 # 忽略 InsecureRequestWarning
 warnings.simplefilter("ignore", InsecureRequestWarning)
 # 登录面板
-def LoginPanel():
+def LoginPanel(hostname, username, password):
+    hostname_number = hostname.split('.')[0].replace('s', '')
+    host = f'https://panel{hostname_number}.serv00.com/login/'
     time.sleep(2)
     headers = {
         'Referer' : host,
@@ -33,7 +37,7 @@ def LoginPanel():
     return msg
         
 # 登录ssh
-def LoginSsh():
+def LoginSsh(hostname, username, password):
     import paramiko
     # 创建ssh对象
     with paramiko.SSHClient() as ssh:
@@ -64,13 +68,21 @@ if __name__ == '__main__':
     if Serv00 is None:
         print('没有找到服务器信息,请重新设置变量Serv00')
         os._exit(0)
-    info = Serv00.split(',')
-    hostname = info[0]
-    username = info[1]
-    password = info[2]
-    hostname_number = hostname.split('.')[0].replace('s', '')
-    host = f'https://panel{hostname_number}.serv00.com/login/'
-    msg = LoginPanel()
-    msg += '\n' + LoginSsh()
-    QLAPI.notify('Serv00保活通知', msg)
+    severs = Serv00.split(';')
+    msgs = []
+    for server in severs:
+        serv = urlparse(f'http://{server}')
+        hname = serv.hostname
+        uname = serv.username
+        passw = serv.password
+        msg = f'开始执行服务器: {uname}@{hname}\n'
+        try:
+            msg = LoginPanel(hname, uname, passw)
+            msg += '\n' + LoginSsh(hname, uname, passw)
+            msgs.append(msg)
+        except Exception as e:  # 捕获所有异常
+            print(f"执行服务器{uname}@{hname}时发生异常: {e}")
+            msgs.append(f"\n❌执行服务器时发生异常: {e}")
+
+    QLAPI.notify('Serv00保活通知', ('\n\n').join(msgs))
 
