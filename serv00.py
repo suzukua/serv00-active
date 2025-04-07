@@ -53,7 +53,7 @@ def LoginSsh(hostname, username, password):
             print('开始执行查看ip命令')
             
             # 执行命令
-            stdin, stdout, stderr = ssh.exec_command("curl http://ip.3322.net")
+            stdin, stdout, stderr = ssh.exec_command("devil vhost list")
             ip = stdout.read().decode()
             print(ip)
             msg += '\n✅IP:' + ip
